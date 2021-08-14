@@ -7,8 +7,10 @@ class Login(QDialog):
     def __init__(self):
         super(Login, self).__init__()
         loadUi("login_form.ui", self)
-        self.loginbutton.clicked.connect(self.loginfunction)
-        self.password.setEchoMode(QtWidgets.QLineEdit.Password)
+        self.loginbutton.clicked.connect(self.loginfunction) #def loginfunction called when u click login button
+        self.password.setEchoMode(QtWidgets.QLineEdit.Password) # password is blacked out
+        self.createaccount.clicked.connect(self.gotosignup) # def gotosignup is called when u click on sign up button
+
 
     def loginfunction(self):
         email = self.email.text()
@@ -16,11 +18,35 @@ class Login(QDialog):
         print("welcome: ", email)
         print("ur password is : ", password)
 
+    def gotosignup(self):
+        signup = SignUp()
+        widget.addWidget(signup)
+        widget.setCurrentIndex(widget.currentIndex()+1)
+
+
 
 class SignUp(QDialog):
-    def __int__(self):
-        super(SignUp, self).__int__()
-        loadUi()
+    def __init__(self):
+        super(SignUp, self).__init__()
+        loadUi("signup_form.ui", self)
+        self.signupbutton.clicked.connect(self.signupfunction)
+        self.password.setEchoMode(QtWidgets.QLineEdit.Password)
+        self.confirmpassword.setEchoMode(QtWidgets.QLineEdit.Password)
+
+
+    def signupfunction(self):
+        email = self.email.text()
+        if self.password.text() == self.confirmpassword.text():
+            password = self.password.text()
+            print("Thank you for signing up")
+            login = Login()
+            widget.addWidget(login)
+            widget.setCurrentIndex(widget.currentIndex()+1)
+
+        else:
+            print("login failed, try again")
+
+
 
 
 app = QApplication(sys.argv)

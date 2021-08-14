@@ -139,7 +139,7 @@ font-size : 30px;</string>
     <string>Don't have an account?</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="loginbutton_2">
+  <widget class="QPushButton" name="createaccount">
    <property name="geometry">
     <rect>
      <x>460</x>
