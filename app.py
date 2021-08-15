@@ -6,7 +6,7 @@ from PyQt5.uic import loadUi
 from PyQt5.QtCore import pyqtSlot
 from PyQt5.QtGui import QImage, QPixmap
 import cv2
-
+import time
 
 class Login(QDialog):
     def __init__(self):
@@ -85,7 +85,6 @@ class SignUp(QDialog):
             self.errorpopup.setStyleSheet("color: green; font-size : 20px;")
             self.errorpopup.setText("Your Account has been created!")
 
-
             login = Login()
             widget.addWidget(login)
             widget.setCurrentIndex(widget.currentIndex() + 1)
@@ -95,6 +94,7 @@ class HomePage(QDialog):
     def __init__(self):
         super(HomePage, self).__init__()
         loadUi("home.ui", self)
+        self.logic = 0
         self.turnoncamera.clicked.connect(self.turnWebCamon)
         self.captureimage.clicked.connect(self.takePicture)
 
@@ -107,6 +107,14 @@ class HomePage(QDialog):
             if ret == True:
                 self.displayImage(frame, 1)
                 cv2.waitKey()
+
+                if self.logic ==1:
+                    self.logic = 0
+                    self.displayImage(frame,1)
+                    vid.release()
+
+    def takePicture(self):
+        self.logic =1
 
     def displayImage(self, img, window = 1):
         qformat = QImage.Format_Indexed8
@@ -123,9 +131,6 @@ class HomePage(QDialog):
         self.maindisplay.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
 
 
-
-    def takePicture(self):
-        print("picture taken")
 
 
 
