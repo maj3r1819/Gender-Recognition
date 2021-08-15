@@ -110,11 +110,35 @@ class HomePage(QDialog):
 
                 if self.logic ==1:
                     self.logic = 0
-                    self.displayImage(frame,1)
                     vid.release()
+                    self.displayImage(frame,1)
+                    self.processImage(frame)
+                    break
+
+
+    def processImage(self,img):
+        image2 = img.copy()
+        eye_cascade = cv2.CascadeClassifier('haarcascade_eye.xml')
+        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        eyes = eye_cascade.detectMultiScale(gray, 1.2, 1)
+        for (x, y, w, h) in eyes:
+            cv2.rectangle(img, (x, y), (x + w, y + h), (0, 0, 255))
+        self.displayImage(img, 1)
+        self.displayOneEye(image2,eyes)
+
+    def processOneEye(self, image2, eyes):
+        one_eye_list = eyes[0]
+        x, y, w, h = one_eye_list
+        one_eye_image = image2[y - 20:y + h + 20, x - 20:x + w + 20]
+        one_eye_image = cv2.resize(one_eye_image, (50, 50))
+        cv2.imshow("image", one_eye_image)
+        cv2.waitKey(0)
+        cv2.destroyAllWindows()
+        self.displayOneEye(one_eye_image, 1)
 
     def takePicture(self):
         self.logic =1
+        # self.processImage()
 
     def displayImage(self, img, window = 1):
         qformat = QImage.Format_Indexed8
@@ -130,6 +154,20 @@ class HomePage(QDialog):
         self.maindisplay.setPixmap(QPixmap.fromImage(img))
         self.maindisplay.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
 
+
+    def displayOneEye(self, img, window = 1):
+        qformat = QImage.Format_Indexed8
+
+        if len(img.shape) == 3:
+            if img.shape[2] == 4:
+                qformat = QImage.Format_RGBA8888
+
+            else:
+                qformat = QImage.Format_RGB888
+        img = QImage(img, img.shape[1], img.shape[0], qformat)
+        img = img.rgbSwapped()
+        self.eyedisplay.setPixmap(QPixmap.fromImage(img))
+        self.eyedisplay.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
 
 
 
