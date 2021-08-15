@@ -3,6 +3,10 @@ from PyQt5 import QtWidgets, QtCore
 from PyQt5.QtWidgets import QDialog, QApplication
 import sqlite3
 from PyQt5.uic import loadUi
+from PyQt5.QtCore import pyqtSlot
+from PyQt5.QtGui import QImage, QPixmap
+import cv2
+
 
 class Login(QDialog):
     def __init__(self):
@@ -23,16 +27,20 @@ class Login(QDialog):
         else:
             conn = sqlite3.connect("login.db")
             cursor = conn.cursor()
-            query = 'SELECT password FROM login_info WHERE email = \'' +email+'\''
+            query = 'SELECT password FROM login_info WHERE email = \'' +email+'\'' #do not edit the quotes in this line,, prone to error
             cursor.execute(query)
             result_pass = cursor.fetchone()[0] #sqlite returns a tuple, we only want the password out of it
-
+            print(result_pass)
             if result_pass!= password:
                 self.errorpopup.setText("Login Details are Incorrect!")
 
             else:
                 self.errorpopup.setStyleSheet("color: green; font-size : 20px;")
                 self.errorpopup.setText("Login Successful!")
+                homepage = HomePage()
+                widget.addWidget(homepage)
+                widget.setCurrentIndex(widget.currentIndex()+ 1)
+
 
 
 
@@ -81,6 +89,44 @@ class SignUp(QDialog):
             login = Login()
             widget.addWidget(login)
             widget.setCurrentIndex(widget.currentIndex() + 1)
+
+
+class HomePage(QDialog):
+    def __init__(self):
+        super(HomePage, self).__init__()
+        loadUi("home.ui", self)
+        self.turnoncamera.clicked.connect(self.turnWebCamon)
+        self.captureimage.clicked.connect(self.takePicture)
+
+    @pyqtSlot()
+    def turnWebCamon(self):
+        print("stream started")
+        vid = cv2.VideoCapture(0)
+        while (vid.isOpened()):
+            ret, frame = vid.read()
+            if ret == True:
+                self.displayImage(frame, 1)
+                cv2.waitKey()
+
+    def displayImage(self, img, window = 1):
+        qformat = QImage.Format_Indexed8
+
+        if len(img.shape) == 3:
+            if img.shape[2] == 4:
+                qformat = QImage.Format_RGBA8888
+
+            else:
+                qformat = QImage.Format_RGB888
+        img = QImage(img, img.shape[1], img.shape[0], qformat)
+        img = img.rgbSwapped()
+        self.maindisplay.setPixmap(QPixmap.fromImage(img))
+        self.maindisplay.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
+
+
+
+    def takePicture(self):
+        print("picture taken")
+
 
 
 app = QApplication(sys.argv)
