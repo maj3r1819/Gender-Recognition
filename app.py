@@ -98,6 +98,7 @@ class HomePage(QDialog):
         self.turnoncamera.clicked.connect(self.turnWebCamon)
         self.captureimage.clicked.connect(self.takePicture)
 
+
     @pyqtSlot()
     def turnWebCamon(self):
         print("stream started")
@@ -114,7 +115,7 @@ class HomePage(QDialog):
                     self.displayImage(frame,1)
                     self.processImage(frame)
                     break
-
+        vid.release()
 
     def processImage(self,img):
         image2 = img.copy()
@@ -124,21 +125,17 @@ class HomePage(QDialog):
         for (x, y, w, h) in eyes:
             cv2.rectangle(img, (x, y), (x + w, y + h), (0, 0, 255))
         self.displayImage(img, 1)
-        self.displayOneEye(image2,eyes)
+        self.processOneEye(image2,eyes)
 
     def processOneEye(self, image2, eyes):
         one_eye_list = eyes[0]
         x, y, w, h = one_eye_list
         one_eye_image = image2[y - 20:y + h + 20, x - 20:x + w + 20]
-        one_eye_image = cv2.resize(one_eye_image, (50, 50))
-        cv2.imshow("image", one_eye_image)
-        cv2.waitKey(0)
-        cv2.destroyAllWindows()
+        one_eye_image = cv2.resize(one_eye_image, (200, 200))
         self.displayOneEye(one_eye_image, 1)
 
     def takePicture(self):
         self.logic =1
-        # self.processImage()
 
     def displayImage(self, img, window = 1):
         qformat = QImage.Format_Indexed8

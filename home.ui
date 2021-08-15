@@ -121,10 +121,10 @@ border-radius : 10px;</string>
   <widget class="QLabel" name="eyedisplay">
    <property name="geometry">
     <rect>
-     <x>20</x>
-     <y>310</y>
-     <width>100</width>
-     <height>100</height>
+     <x>10</x>
+     <y>300</y>
+     <width>131</width>
+     <height>131</height>
     </rect>
    </property>
    <property name="styleSheet">
