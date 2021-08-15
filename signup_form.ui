@@ -155,6 +155,23 @@ font-size : 30px;</string>
     <string/>
    </property>
   </widget>
+  <widget class="QLabel" name="errorpopup">
+   <property name="geometry">
+    <rect>
+     <x>210</x>
+     <y>430</y>
+     <width>331</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">font-size : 20px;
+color : red;</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
  </widget>
  <resources/>
  <connections/>

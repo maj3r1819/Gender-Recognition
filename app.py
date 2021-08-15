@@ -1,6 +1,7 @@
 import sys
-from PyQt5 import QtWidgets
+from PyQt5 import QtWidgets, QtCore
 from PyQt5.QtWidgets import QDialog, QApplication
+import sqlite3
 from PyQt5.uic import loadUi
 
 class Login(QDialog):
@@ -15,8 +16,28 @@ class Login(QDialog):
     def loginfunction(self):
         email = self.email.text()
         password = self.password.text()
-        print("welcome: ", email)
-        print("ur password is : ", password)
+
+        if len(email) == 0 or len(password) ==0:
+            self.errorpopup.setText("Please input all fields.")
+
+        else:
+            conn = sqlite3.connect("login.db")
+            cursor = conn.cursor()
+            query = 'SELECT password FROM login_info WHERE email = \'' +email+'\''
+            cursor.execute(query)
+            result_pass = cursor.fetchone()[0] #sqlite returns a tuple, we only want the password out of it
+
+            if result_pass!= password:
+                self.errorpopup.setText("Login Details are Incorrect!")
+
+            else:
+                self.errorpopup.setStyleSheet("color: green; font-size : 20px;")
+                self.errorpopup.setText("Login Successful!")
+
+
+
+
+
 
     def gotosignup(self):
         signup = SignUp()
@@ -29,24 +50,37 @@ class SignUp(QDialog):
     def __init__(self):
         super(SignUp, self).__init__()
         loadUi("signup_form.ui", self)
-        self.signupbutton.clicked.connect(self.signupfunction)
         self.password.setEchoMode(QtWidgets.QLineEdit.Password)
         self.confirmpassword.setEchoMode(QtWidgets.QLineEdit.Password)
+        self.signupbutton.clicked.connect(self.signupfunction)
 
 
     def signupfunction(self):
+
         email = self.email.text()
-        if self.password.text() == self.confirmpassword.text():
-            password = self.password.text()
-            print("Thank you for signing up")
+        password = self.password.text()
+        confirmpassword = self.confirmpassword.text()
+
+        if len(email) ==0 or len(password) ==0 or len(confirmpassword) ==0:
+            self.errorpopup.setText("Please input all fields.")
+
+        elif password != confirmpassword:
+            self.errorpopup.setText("Password does not match. Try Again.")
+        else:
+            conn = sqlite3.connect("login.db")
+            current = conn.cursor()
+
+            user_info = [email, password]
+            current.execute('INSERT INTO login_info (email, password) VALUES (?,?)', user_info)
+            conn.commit()
+            conn.close()
+            self.errorpopup.setStyleSheet("color: green; font-size : 20px;")
+            self.errorpopup.setText("Your Account has been created!")
+
+
             login = Login()
             widget.addWidget(login)
-            widget.setCurrentIndex(widget.currentIndex()+1)
-
-        else:
-            print("login failed, try again")
-
-
+            widget.setCurrentIndex(widget.currentIndex() + 1)
 
 
 app = QApplication(sys.argv)
