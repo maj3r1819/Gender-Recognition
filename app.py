@@ -8,6 +8,13 @@ from PyQt5.QtGui import QImage, QPixmap
 import cv2
 import time
 
+import tflearn
+from tflearn.layers.conv import conv_2d, max_pool_2d
+from tflearn.layers.core import input_data, dropout, fully_connected
+from tflearn.layers.estimator import regression
+from tensorflow.python.framework import ops
+
+
 class Login(QDialog):
     def __init__(self):
         super(Login, self).__init__()
@@ -30,7 +37,7 @@ class Login(QDialog):
             query = 'SELECT password FROM login_info WHERE email = \'' +email+'\'' #do not edit the quotes in this line,, prone to error
             cursor.execute(query)
             result_pass = cursor.fetchone()[0] #sqlite returns a tuple, we only want the password out of it
-            print(result_pass)
+            # print(result_pass)
             if result_pass!= password:
                 self.errorpopup.setText("Login Details are Incorrect!")
 
@@ -131,8 +138,80 @@ class HomePage(QDialog):
         one_eye_list = eyes[0]
         x, y, w, h = one_eye_list
         one_eye_image = image2[y - 20:y + h + 20, x - 20:x + w + 20]
-        one_eye_image = cv2.resize(one_eye_image, (200, 200))
-        self.displayOneEye(one_eye_image, 1)
+        one_eye_image1 = cv2.resize(one_eye_image, (200, 200))
+        self.displayOneEye(one_eye_image1, 1)
+        image = cv2.resize(one_eye_image, (50,50))
+        self.testModel(image)
+
+
+    def testModel(self, image):
+        ops.reset_default_graph()
+        img_size = 50
+        lr = 1e-3
+
+        # Building convolutional convnet
+        convnet = input_data(shape=[None, img_size, img_size, 3], name='input')
+        # http://tflearn.org/layers/conv/
+        # http://tflearn.org/activations/
+
+        convnet = conv_2d(convnet, 32, 2, activation='relu')
+        convnet = max_pool_2d(convnet, 2)
+
+        convnet = conv_2d(convnet, 64, 2, activation='relu')
+        convnet = max_pool_2d(convnet, 2)
+
+        convnet = conv_2d(convnet, 32, 2, activation='relu')
+        convnet = max_pool_2d(convnet, 2)
+
+        convnet = conv_2d(convnet, 64, 2, activation='relu')
+        convnet = max_pool_2d(convnet, 2)
+
+        convnet = conv_2d(convnet, 32, 2, activation='relu')
+        convnet = max_pool_2d(convnet, 2)
+
+        convnet = conv_2d(convnet, 64, 2, activation='relu')
+        convnet = max_pool_2d(convnet, 2)
+
+        convnet = conv_2d(convnet, 32, 2, activation='relu')
+        convnet = max_pool_2d(convnet, 2)
+
+        convnet = conv_2d(convnet, 64, 2, activation='relu')
+        convnet = max_pool_2d(convnet, 2)
+
+        convnet = conv_2d(convnet, 32, 2, activation='relu')
+        convnet = max_pool_2d(convnet, 2)
+
+        convnet = conv_2d(convnet, 64, 2, activation='relu')
+        convnet = max_pool_2d(convnet, 2)
+
+        convnet = conv_2d(convnet, 32, 2, activation='relu')
+        convnet = max_pool_2d(convnet, 2)
+
+        convnet = conv_2d(convnet, 64, 2, activation='relu')
+        convnet = max_pool_2d(convnet, 2)
+
+        convnet = fully_connected(convnet, 1024, activation='relu')
+        convnet = dropout(convnet, 0.8)
+
+        convnet = fully_connected(convnet, 2, activation='softmax')
+        convnet = regression(convnet, optimizer='adam', learning_rate=lr, loss='categorical_crossentropy',
+                             name='targets')
+
+        model = tflearn.DNN(convnet, tensorboard_dir='log')
+        model.load('gender_detector')
+
+        orig = image
+        data = image.reshape(img_size, img_size, 3)
+        model_out = model.predict([data])[0]
+        model_out = model_out.round()
+        if model_out[0] == 0:
+            self.outputdisplay.setStyleSheet("background-color: green; ")
+            self.outputdisplay.setText("Male Detected")
+        else:
+            self.outputdisplay.setStyleSheet("background-color: red; ")
+            self.outputdisplay.setText("Female Detected")
+
+
 
     def takePicture(self):
         self.logic =1
