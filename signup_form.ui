@@ -118,7 +118,7 @@ font-size : 48px;
     <string notr="true">background-color: rgb(164, 17, 255);
 border-color: rgb(255, 64, 99);
 font-size : 30px;
-border-radius : 10px;</string>
+/*border-radius : 10px; */</string>
    </property>
    <property name="text">
     <string>Sign Up</string>

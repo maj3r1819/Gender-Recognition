@@ -15,6 +15,24 @@ from tflearn.layers.estimator import regression
 from tensorflow.python.framework import ops
 
 
+class MainPage(QDialog):
+    def __init__(self):
+        super(MainPage, self).__init__()
+        loadUi("main.ui", self)
+        self.loginbutton.clicked.connect(self.loginfunction)
+        # self.signupbutton.clicked.connect(self.signupfunction)
+
+    def loginfunction(self):
+        login = Login()
+        widget.addWidget(login)
+        widget.setCurrentIndex(widget.currentIndex() + 1)
+
+    def signupfunction(self):
+        signup = SignUp()
+        widget.addWidget(signup)
+        widget.setCurrentIndex(widget.currentIndex() + 1)
+
+
 class Login(QDialog):
     def __init__(self):
         super(Login, self).__init__()
@@ -104,6 +122,8 @@ class HomePage(QDialog):
         self.logic = 0
         self.turnoncamera.clicked.connect(self.turnWebCamon)
         self.captureimage.clicked.connect(self.takePicture)
+        self.localimageload.clicked.connect(self.locallyLoad)
+
 
 
     @pyqtSlot()
@@ -246,10 +266,16 @@ class HomePage(QDialog):
         self.eyedisplay.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
 
 
+    def locallyLoad(self):
+        main =MainPage()
+        widget.addWidget(main)
+        widget.setCurrentIndex(widget.currentIndex() + 1)
+
+
 
 
 app = QApplication(sys.argv)
-main_window = Login()
+main_window = MainPage()
 widget = QtWidgets.QStackedWidget()               #creating a widget stack to stack all the pages of  the project
 widget.addWidget(main_window)
 widget.setFixedWidth(563)

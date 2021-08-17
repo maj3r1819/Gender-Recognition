@@ -60,7 +60,7 @@ font-size : 48px;
    <property name="styleSheet">
     <string notr="true">background-color: rgb(97, 85, 177);
 font-size : 16px;
-border-radius : 10px;</string>
+/*border-radius : 10px;*/</string>
    </property>
    <property name="text">
     <string>Turn On Cam</string>
@@ -78,7 +78,7 @@ border-radius : 10px;</string>
    <property name="styleSheet">
     <string notr="true">background-color: rgb(97, 85, 177);
 font-size : 16px;
-border-radius : 10px;</string>
+/*border-radius : 10px; */</string>
    </property>
    <property name="text">
     <string>Capture</string>
@@ -96,7 +96,7 @@ border-radius : 10px;</string>
    <property name="styleSheet">
     <string notr="true">font-size : 12px;
 background-color: rgb(255, 61, 61);
-border-radius : 10px;</string>
+/*border-radius : 10px; */</string>
    </property>
    <property name="text">
     <string>Load Image Locally</string>
