@@ -2,6 +2,7 @@
 This is a Desktop App I developed that identifies the gender of a person (Male or Female only) after clicking a picture. 
 * For the gender recognition part I have trained a **Convolutional Neural Network (CNN)** that classifies an image either as a male or female.
 * The App is developed using the **QT** framework which is a library that is flexible with different programming languages. 
+* To see the working video of this project please checkout this link https://www.youtube.com/watch?v=TF9NsEMBKNE&ab_channel=SagarPotnis
 
 ## Gender Recognition Part
 ###  Convolutional Neural Network
