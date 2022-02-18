@@ -17,4 +17,14 @@ Please go through the **eye.ipynb** notebook first, where I can given a plain im
 * Then, we extract only the eyes from the entire image.
 * This image is then fed to the neural network and the output is predicted.
  
-I have used this format in the App deployment.
+ ## QT App
+ ## Database
+ The database I used for the login and signup page is sqlite.
+ 
+ ## App
+ * After Logging in, the home page of the app is loaded where the app asks turn on your webcamera.
+ * After the camera is turned on, you can capture a picture. 
+ * Once the picture is taken, the program extracts the eyes from the entire image, and tests that image on the trained model.
+ * After detecting the gender it displays the gender at the bottom of the screen.
+ * There is a button to add images locally but that functionality has not been added yet.   
+ 
